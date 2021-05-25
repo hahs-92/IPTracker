@@ -4,37 +4,59 @@
 //     zoom: 13
 // })
 
-let placePoition 
-
+//ELEMENTOS DEL DOM
+const body = document.querySelector('body')
 const input = document.querySelector('input')
 const button = document.querySelector('.Button')
+const subTitles = document.querySelectorAll('h2')
 
+//INICIALIZAR MAP 
 const map = L.map('mapid')
-
+//URL BASE
 const URLAPIMAPS = 'https://geo.ipify.org/api/v1?apiKey=at_AwEniPKICA1wLEJS0GpEcwGy0Yb8m'
 
-let latitude = 6.43809
-let longitude = -75.33136
+let latitude
+let longitude 
+let ip
+let city
+let timezone
+let isp
+
+
+const updateValues = (ip, city, timezone, isp) => {
+    let values = [ ...subTitles ]
+    values[0].innerText = ip
+    values[1].innerText = city
+    values[2].innerText = `UTF${ timezone }`
+    values[3].innerText = isp
+}
 
 const getInfoUser = (e) => {
-    // console.log(e)
     let ip = input.value
     const url = `${ URLAPIMAPS}&ipAddress=${ ip }` 
 
     getData(url)
 }
 
-button.addEventListener('click', getInfoUser)
-
 
 const getData = async (url) => {
     const response = await fetch(url)
     const data = await response.json()
     
+    ip = data.ip
+    city = data.location.city
     latitude = data.location.lat
     longitude = data.location.lng
+    timezone = data.location.timezone
+    isp = data.isp
 
+    updateValues(ip, city, timezone, isp)
     renderMap(latitude, longitude)
+}
+
+const inicializate =  () => {
+    getData(URLAPIMAPS)
+    console.log('start...')
 }
 
 
@@ -58,9 +80,14 @@ const renderMap = (lat, lng) => {
     }).addTo(map);
     
     L.marker([lat, lng]).addTo(map)
-        .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+        .bindPopup('You are here¡')
         .openPopup();
 }
 
-renderMap(latitude, longitude)
+
+
+// renderMap(latitude, longitude)
+button.addEventListener('click', getInfoUser)
+
+window.onload = () => inicializate()
 
