@@ -5,10 +5,11 @@
 // })
 
 //ELEMENTOS DEL DOM
-const body = document.querySelector('body')
 const input = document.querySelector('input')
 const button = document.querySelector('.Button')
 const subTitles = document.querySelectorAll('h2')
+const alert = document.querySelector('h3')
+const loader = document.querySelector('.Loader')
 
 //INICIALIZAR MAP 
 const map = L.map('mapid')
@@ -32,26 +33,40 @@ const updateValues = (ip, city, timezone, isp) => {
 }
 
 const getInfoUser = (e) => {
+    loader.className = 'Loader'
     let ip = input.value
-    const url = `${ URLAPIMAPS}&ipAddress=${ ip }` 
+    let url
+
+    if(typeof(id) === 'string') {
+        url = `${ URLAPIMAPS}&ipAddress=${ ip }` 
+    } else {
+        url = `${ URLAPIMAPS}&domain=${ ip }` 
+    }
 
     getData(url)
 }
 
 
 const getData = async (url) => {
-    const response = await fetch(url)
-    const data = await response.json()
+    alert.innerText =''
+    try {     
+        const response = await fetch(url)
+        const data = await response.json()
+        
+        ip = data.ip
+        city = data.location.city
+        latitude = data.location.lat
+        longitude = data.location.lng
+        timezone = data.location.timezone
+        isp = data.isp
     
-    ip = data.ip
-    city = data.location.city
-    latitude = data.location.lat
-    longitude = data.location.lng
-    timezone = data.location.timezone
-    isp = data.isp
-
-    updateValues(ip, city, timezone, isp)
-    renderMap(latitude, longitude)
+        updateValues(ip, city, timezone, isp)
+        renderMap(latitude, longitude)
+        loader.className = 'Loader__disable'
+    } catch (error) {
+        alert.innerText = 'Ha ocurrido un error, intentelo nuevamente¡¡'
+        console.error(error.message)
+    }
 }
 
 const inicializate =  () => {
