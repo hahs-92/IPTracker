@@ -64,7 +64,7 @@ const inicializate =  () => {
 }
 
 const myIcon = L.icon({
-    iconUrl: '/src/assets/icon-location.svg',
+    iconUrl: 'src/assets/icon-location.svg',
     iconSize: [38, 65],
     iconAnchor: [22, 94],
     popupAnchor: [-3, -76],
