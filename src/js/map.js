@@ -1,8 +1,4 @@
-
-// const map = L.map('mapid', {
-//     center: [51.505, -0.09],
-//     zoom: 13
-// })
+// import icon from '../assets/icon-location.svg'
 
 //ELEMENTOS DEL DOM
 const input = document.querySelector('input')
@@ -16,14 +12,9 @@ const map = L.map('mapid')
 //URL BASE
 const URLAPIMAPS = 'https://geo.ipify.org/api/v1?apiKey=at_AwEniPKICA1wLEJS0GpEcwGy0Yb8m'
 
-let latitude
-let longitude 
-let ip
-let city
-let timezone
-let isp
+let latitude, longitude, ip, city, timezone, isp
 
-
+//FUNCIONES
 const updateValues = (ip, city, timezone, isp) => {
     let values = [ ...subTitles ]
     values[0].innerText = ip
@@ -32,7 +23,7 @@ const updateValues = (ip, city, timezone, isp) => {
     values[3].innerText = isp
 }
 
-const getInfoUser = (e) => {
+const getInfoUser = () => {
     loader.className = 'Loader'
     let ip = input.value
     let url
@@ -42,10 +33,8 @@ const getInfoUser = (e) => {
     } else {
         url = `${ URLAPIMAPS}&domain=${ ip }` 
     }
-
     getData(url)
 }
-
 
 const getData = async (url) => {
     alert.innerText =''
@@ -74,6 +63,15 @@ const inicializate =  () => {
     console.log('start...')
 }
 
+const myIcon = L.icon({
+    iconUrl: '/src/assets/icon-location.svg',
+    iconSize: [38, 65],
+    iconAnchor: [22, 94],
+    popupAnchor: [-3, -76],
+    shadowUrl: null,
+    shadowSize: [68, 95],
+    shadowAnchor: [22, 94]
+});
 
 // const positionUser = ( position) => {
 //     placePoition = [ position.coords.latitude, position.coords.longitude]
@@ -87,22 +85,17 @@ const inicializate =  () => {
 // navigator.geolocation.getCurrentPosition(positionUser, errorNavigator,{ enableHighAccuracy: true })
 // console.log(placePoition)
 
-
 const renderMap = (lat, lng) => {
     map.setView([lat, lng], 16)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     
-    L.marker([lat, lng]).addTo(map)
-        .bindPopup('You are here¡')
+    L.marker([lat, lng], { icon: myIcon }).addTo(map)
+        .bindPopup('It´s here¡')
         .openPopup();
 }
 
 
-
-// renderMap(latitude, longitude)
 button.addEventListener('click', getInfoUser)
-
 window.onload = () => inicializate()
-
